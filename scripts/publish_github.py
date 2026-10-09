@@ -65,7 +65,16 @@ def main():
         print(f"ERROR: report not found: {src}", file=sys.stderr)
         return 1
     dst = MIRROR / "docs" / "reports" / f"{args.date}.md"
-    dst.write_bytes(src.read_bytes())
+    body = src.read_text()
+    # Prepend Jekyll front matter so the report uses the styled tabbed layout.
+    # Strip any existing front matter first (idempotent re-runs).
+    if body.startswith("---\n"):
+        end = body.find("\n---\n", 4)
+        if end != -1:
+            body = body[end + 5:].lstrip("\n")
+    title = body.splitlines()[0].lstrip("# ").strip().replace('"', "'")
+    front = f'---\nlayout: report\ntitle: "{title}"\n---\n\n'
+    dst.write_text(front + body)
 
     r = subprocess.run(
         [sys.executable, str(MIRROR / "scripts" / "build_site_index.py")],
