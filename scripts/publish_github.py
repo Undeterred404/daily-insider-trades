@@ -77,18 +77,20 @@ def main():
     dst.write_text(front + body)
 
     r = subprocess.run(
-        [sys.executable, str(MIRROR / "scripts" / "build_site_index.py")],
+        [sys.executable, str(MIRROR / "scripts" / "render_site.py")],
         capture_output=True, text=True,
     )
     print(r.stdout.strip())
     if r.returncode != 0:
-        print(f"index build failed: {r.stderr.strip()[:300]}", file=sys.stderr)
+        print(f"site render failed: {r.stderr.strip()[:300]}", file=sys.stderr)
         return 1
 
     ok = True
     msg = f"Daily insider trading report {args.date}"
     ok &= push_file(f"docs/reports/{args.date}.md", msg)
-    ok &= push_file("docs/index.md", msg)
+    ok &= push_file(f"docs/reports/{args.date}.html", msg)
+    ok &= push_file("docs/index.html", msg)
+    ok &= push_file("docs/.nojekyll", msg)
     print("PUBLISH OK" if ok else "PUBLISH HAD FAILURES")
     return 0 if ok else 1
 
