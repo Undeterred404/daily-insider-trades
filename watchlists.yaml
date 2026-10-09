@@ -1,0 +1,76 @@
+# Watchlists for the daily insider/congressional trading report.
+# Congressional matching is by last name (case-insensitive substring).
+# 13F matching is by filer-name keyword against the SEC bulk SUBMISSION.tsv.
+
+politicians:
+  # High-activity congressional traders, widely reported
+  - Nancy Pelosi
+  - Paul Pelosi        # spouse; trades filed under the member
+  - Donald Trump
+  - Josh Gottheimer
+  - Michael McCaul
+  - Ro Khanna
+  - Dan Crenshaw
+  - Tommy Tuberville
+  - Debbie Wasserman Schultz
+  - Kevin Hern
+  - Scott Franklin
+  - Neal Dunn
+  - Rob Bresnahan
+  - Cleo Fields
+
+investors:
+  # Individuals tracked via 13F filings (their funds) + Form 4 where applicable
+  - name: Warren Buffett
+    filer_keywords: ["BERKSHIRE HATHAWAY"]
+  - name: Bill Ackman
+    filer_keywords: ["PERSHING SQUARE"]
+  - name: Michael Burry
+    filer_keywords: ["SCION ASSET MANAGEMENT"]
+  - name: David Tepper
+    filer_keywords: ["APPALOOSA"]
+  - name: Stanley Druckenmiller
+    filer_keywords: ["DUQUESNE"]
+  - name: Seth Klarman
+    filer_keywords: ["BAUPOST"]
+  - name: George Soros
+    filer_keywords: ["SOROS FUND MANAGEMENT"]
+
+public_figures:
+  # High-profile individuals flagged in Form 4 insider data (substring match
+  # against the reporting owner's name, case-insensitive)
+  - Elon Musk
+  - Jensen Huang
+  - Tim Cook
+  - Satya Nadella
+  - Jeff Bezos
+  - Mark Zuckerberg
+  - Jamie Dimon
+  - Sundar Pichai
+
+firms:
+  # Major investment firms tracked via 13F
+  - name: Berkshire Hathaway Inc
+    filer_keywords: ["BERKSHIRE HATHAWAY INC"]
+  - name: Pershing Square Capital Management
+    filer_keywords: ["PERSHING SQUARE CAPITAL"]
+  - name: Citadel Advisors
+    filer_keywords: ["CITADEL ADVISORS"]
+  - name: Bridgewater Associates
+    filer_keywords: ["BRIDGEWATER ASSOCIATES"]
+  - name: Renaissance Technologies
+    filer_keywords: ["RENAISSANCE TECHNOLOGIES"]
+  - name: Appaloosa Management
+    filer_keywords: ["APPALOOSA MANAGEMENT", "APPALOOSA LP"]
+  - name: Duquesne Family Office
+    filer_keywords: ["DUQUESNE FAMILY OFFICE"]
+  - name: Baupost Group
+    filer_keywords: ["BAUPOST GROUP"]
+  - name: Soros Fund Management
+    filer_keywords: ["SOROS FUND MANAGEMENT"]
+  - name: Scion Asset Management
+    filer_keywords: ["SCION ASSET MANAGEMENT"]
+
+# Form 4 "notable" threshold: flag insider buys/sells above this USD value
+# even when the insider isn't on a watchlist.
+form4_notable_threshold: 500000
