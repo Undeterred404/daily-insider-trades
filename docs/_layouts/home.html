@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{{ page.title }}</title>
+<meta name="description" content="Daily insider trading report tracking congressional stock trades, SEC Form 4 insider transactions, and 13F institutional holdings for top politicians, billionaires, and investment firms."/>
+<style>
+:root{
+  --bg:#f3f6fa; --card:#ffffff; --ink:#16233a; --muted:#5c6f88;
+  --accent:#0b5fff; --line:#dfe6f0;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+header.hero{background:linear-gradient(135deg,#081c36 0%,#0f3a75 100%);color:#fff;padding:3rem 1.25rem 2.4rem}
+.hero-inner{max-width:980px;margin:0 auto}
+.hero h1{margin:0 0 .5rem;font-size:2.1rem;letter-spacing:-.01em}
+.hero p{margin:.4rem 0;opacity:.88;max-width:640px}
+.hero .src{font-size:.85rem;opacity:.75}
+.wrap{max-width:980px;margin:0 auto;padding:2rem 1.25rem 3.5rem}
+main h2{font-size:1.25rem;margin:2rem 0 .9rem}
+main ul{list-style:none;padding:0;margin:0;display:grid;gap:.8rem}
+main li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem;box-shadow:0 1px 3px rgba(16,35,58,.06)}
+main li:first-child{border-left:5px solid var(--accent)}
+main li a{font-weight:600;font-size:1.05rem}
+.disc{margin-top:2.5rem;padding-top:1.2rem;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+.disc a{color:var(--muted);text-decoration:underline}
+@media(max-width:640px){.hero h1{font-size:1.6rem}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <h1>Daily Insider Trading Report</h1>
+    <p>What are politicians, billionaires, and Wall Street giants buying and selling? Updated every trading day.</p>
+    <p class="src">Sources: SEC EDGAR (Form 4, 13F) · House Clerk disclosures · Senate eFD</p>
+  </div>
+</header>
+<div class="wrap">
+  <main>
+    {{ content }}
+  </main>
+  <div class="disc">
+    Congressional PTRs disclose amount ranges, not exact values; trades shown as filed.
+    Form 4 covers open-market buys and sells only. 13F is quarterly with a ~45-day lag.
+    For informational purposes only — not financial advice.
+    <a href="https://github.com/Undeterred404/daily-insider-trades">How this report is built</a>
+  </div>
+</div>
+</body>
+</html>
