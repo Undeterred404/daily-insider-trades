@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title> — Daily Insider Trading Report</title>
+<meta name="description" content="Daily congressional stock trades, SEC Form 4 insider transactions, and 13F institutional holdings for top politicians, billionaires, and investment firms."/>
+<style>
+:root{--bg:#f3f6fa;--card:#fff;--ink:#16233a;--muted:#5c6f88;--accent:#0b5fff;
+--buy:#0e7a3d;--buy-bg:#e7f6ec;--sell:#c03221;--sell-bg:#fdecea;--line:#dfe6f0}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+header.hero{background:linear-gradient(135deg,#081c36 0%,#0f3a75 100%);color:#fff;padding:2.6rem 1.25rem 2rem}
+.hero-inner{max-width:1000px;margin:0 auto}
+.hero h1{margin:0 0 .4rem;font-size:1.9rem;letter-spacing:-.01em}
+.hero .sub{margin:0 0 1rem;opacity:.88}
+.hero nav{font-size:.9rem;opacity:.92}.hero nav a{color:#a9c6ff;margin-right:1.2rem}
+.wrap{max-width:1000px;margin:0 auto;padding:0 1.25rem 3.5rem}
+.controls{position:sticky;top:0;background:var(--bg);padding:1rem 0 .8rem;z-index:5}
+.tabs{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:.8rem}
+.tab-btn{border:1px solid var(--line);background:var(--card);padding:.6rem 1.15rem;border-radius:999px;cursor:pointer;font-size:.95rem;color:var(--ink)}
+.tab-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.tab-btn .count{display:inline-block;min-width:1.5em;text-align:center;background:rgba(0,0,0,.08);border-radius:999px;font-size:.8em;padding:.05em .4em;margin-left:.45em}
+.tab-btn.active .count{background:rgba(255,255,255,.25)}
+.filters{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:transparent;padding:.5rem 1rem;cursor:pointer;font-size:.9rem;color:var(--muted)}
+.seg button.active{background:var(--ink);color:#fff;font-weight:600}
+#search{flex:1;min-width:220px;border:1px solid var(--line);border-radius:999px;padding:.55rem 1.1rem;font-size:.95rem;background:var(--card)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.tab-panel h3{font-size:1.05rem;margin:1.4rem 0 .6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-size:.85rem}
+ul.trades{list-style:none;padding:0;margin:0;display:grid;gap:.7rem}
+ul.trades li{background:var(--card);border:1px solid var(--line);border-left:5px solid #9fb0c7;border-radius:10px;padding:.85rem 1.05rem;box-shadow:0 1px 2px rgba(16,35,58,.05)}
+ul.trades li.buy-side{border-left-color:var(--buy)}
+ul.trades li.sell-side{border-left-color:var(--sell)}
+ul.trades li.hidden{display:none}
+p.note{color:var(--muted);font-style:italic;background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:.8rem 1rem}
+strong.buy{color:var(--buy);background:var(--buy-bg);padding:.1em .5em;border-radius:6px;font-size:.85em}
+strong.sell{color:var(--sell);background:var(--sell-bg);padding:.1em .5em;border-radius:6px;font-size:.85em}
+.tag-new{color:var(--buy);font-weight:700}.tag-exit{color:var(--sell);font-weight:700}
+.watch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+.watch-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem}
+.watch-card h4{margin:0 0 .5rem;font-size:.95rem}
+.watch-card ul{margin:0;padding-left:1.1rem;font-size:.92rem;color:var(--muted)}
+.archive{margin-top:2.5rem}.archive ul{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
+.archive li a{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.4rem .95rem;font-size:.9rem}
+footer.site{border-top:1px solid var(--line);margin-top:2.5rem;padding-top:1.2rem;color:var(--muted);font-size:.85rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.9rem;margin-top:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem}
+.card .date{font-weight:700;font-size:1.05rem}
+.card .sum{color:var(--muted);font-size:.9rem;margin:.4rem 0 .8rem}
+.card.featured{border-left:5px solid var(--accent)}
+h2.sec{font-size:1.3rem;margin:2.2rem 0 .4rem}
+@media(max-width:640px){.hero h1{font-size:1.45rem}.controls{position:static}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="hero-inner">
+<h1></h1>
+<p class="sub">Filings newly processed in the last 1 day(s). Sources: SEC EDGAR (Form 4, 13F), House Clerk disclosures + Senate eFD.</p>
+<nav><a href="../index.html">← All reports</a><a href="https://github.com/Undeterred404/daily-insider-trades">GitHub</a></nav>
+</div></header>
+<div class="wrap">
+<div class="controls">
+<div class="tabs" role="tablist">
+<button class="tab-btn active" data-tab="politicians">Politicians <span class="count">2</span></button><button class="tab-btn" data-tab="figures">Public Figures</button><button class="tab-btn" data-tab="investors">Investors <span class="count">15</span></button><button class="tab-btn" data-tab="firms">Firms <span class="count">30</span></button><button class="tab-btn" data-tab="watchlist">Watchlist</button>
+</div>
+<div class="filters">
+<div class="seg" id="side-filter">
+<button data-side="all" class="active">All</button><button data-side="buy">Buys</button><button data-side="sell">Sells</button>
+</div>
+<input id="search" type="search" placeholder="Filter by name, ticker, company…"/>
+</div>
+</div>
+<div class="tab-panel active" id="panel-politicians">
+<p class="note">No new trades by watched politicians.</p>
+<h3>Other notable congressional trades (2 total)</h3>
+<ul class="trades">
+<li class="buy-side" data-side="buy" data-text="john fetterman (senate, s) — purchase  dell intl llc/emc corp  rate/coupon: 5.6%  matures: 2033-09-15 — $1,001 - $15,000 (traded 2026-09-16, filed 2026-10-07)"><strong>John Fetterman</strong> (Senate, S) — <strong class="buy">Purchase</strong>  DELL INTL LLC/EMC CORP  Rate/Coupon: 5.6%  Matures: 2033-09-15 — $1,001 - $15,000 (traded 2026-09-16, filed 2026-10-07)</li>
+<li class="buy-side" data-side="buy" data-text="john fetterman (senate, s) — purchase  dell intl llc/emc corp  rate/coupon: 5.6%  matures: 2033-09-15 — $1,001 - $15,000 (traded 2026-09-15, filed 2026-10-07)"><strong>John Fetterman</strong> (Senate, S) — <strong class="buy">Purchase</strong>  DELL INTL LLC/EMC CORP  Rate/Coupon: 5.6%  Matures: 2033-09-15 — $1,001 - $15,000 (traded 2026-09-15, filed 2026-10-07)</li>
+</ul>
+</div><div class="tab-panel" id="panel-figures">
+<p class="note">No new filings by watched public figures.</p>
+<p class="note">No notable insider buys (≥$500K).</p>
+<p class="note">No notable insider sells (≥$500K).</p>
+</div><div class="tab-panel" id="panel-investors">
+<ul class="trades">
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): alphabet inc — $23,523,689,772 → $11,871,367,661 (δ $-11,652,322,111)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): ALPHABET INC — $23,523,689,772 → $11,871,367,661 (Δ $-11,652,322,111) <span style="color:var(--muted);font-size:.8em">[Warren Buffett]</span></li>
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): alphabet inc — $9,606,489,032 → $1,028,454,775 (δ $-8,578,034,257)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): ALPHABET INC — $9,606,489,032 → $1,028,454,775 (Δ $-8,578,034,257) <span style="color:var(--muted);font-size:.8em">[Warren Buffett]</span></li>
+<li class="buy-side" data-side="buy" data-text="berkshire hathaway inc (berkshire hathaway inc): moodys corp — $32,655,532 → $5,507,110,938 (δ $+5,474,455,406)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): MOODYS CORP — $32,655,532 → $5,507,110,938 (Δ $+5,474,455,406) <span style="color:var(--muted);font-size:.8em">[Warren Buffett]</span></li>
+<li class="buy-side" data-side="buy" data-text="berkshire hathaway inc (berkshire hathaway inc): occidental pete corp — $12,868,205,304 → $17,221,193,015 (δ $+4,352,987,711)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): OCCIDENTAL PETE CORP — $12,868,205,304 → $17,221,193,015 (Δ $+4,352,987,711) <span style="color:var(--muted);font-size:.8em">[Warren Buffett]</span></li>
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): delta air lines inc — $5,368,591,200 → $2,646,532,635 (δ $-2,722,058,565)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): DELTA AIR LINES INC — $5,368,591,200 → $2,646,532,635 (Δ $-2,722,058,565) <span style="color:var(--muted);font-size:.8em">[Warren Buffett]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): brookfield corp [new] — — → $2,415,946,008 (δ $+2,415,946,008)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): BROOKFIELD CORP <strong class="tag-new">[NEW]</strong> — — → $2,415,946,008 (Δ $+2,415,946,008) <span style="color:var(--muted);font-size:.8em">[Bill Ackman]</span></li>
+<li class="buy-side" data-side="buy" data-text="berkshire hathaway inc (berkshire hathaway inc): chevron corporation — $9,655,809,914 → $12,052,286,868 (δ $+2,396,476,954)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): CHEVRON CORPORATION — $9,655,809,914 → $12,052,286,868 (Δ $+2,396,476,954) <span style="color:var(--muted);font-size:.8em">[Warren Buffett]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): amazon com inc [new] — — → $2,385,104,083 (δ $+2,385,104,083)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): AMAZON COM INC <strong class="tag-new">[NEW]</strong> — — → $2,385,104,083 (Δ $+2,385,104,083) <span style="color:var(--muted);font-size:.8em">[Bill Ackman]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): uber technologies inc [new] — — → $2,154,934,398 (δ $+2,154,934,398)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): UBER TECHNOLOGIES INC <strong class="tag-new">[NEW]</strong> — — → $2,154,934,398 (Δ $+2,154,934,398) <span style="color:var(--muted);font-size:.8em">[Bill Ackman]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): microsoft corp [new] — — → $2,092,970,053 (δ $+2,092,970,053)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): MICROSOFT CORP <strong class="tag-new">[NEW]</strong> — — → $2,092,970,053 (Δ $+2,092,970,053) <span style="color:var(--muted);font-size:.8em">[Bill Ackman]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): restaurant brands intl inc [new] — — → $1,673,501,194 (δ $+1,673,501,194)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): RESTAURANT BRANDS INTL INC <strong class="tag-new">[NEW]</strong> — — → $1,673,501,194 (Δ $+1,673,501,194) <span style="color:var(--muted);font-size:.8em">[Bill Ackman]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): meta platforms inc [new] — — → $1,522,358,404 (δ $+1,522,358,404)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): META PLATFORMS INC <strong class="tag-new">[NEW]</strong> — — → $1,522,358,404 (Δ $+1,522,358,404) <span style="color:var(--muted);font-size:.8em">[Bill Ackman]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): howard hughes holdings inc [new] — — → $1,192,581,569 (δ $+1,192,581,569)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): HOWARD HUGHES HOLDINGS INC <strong class="tag-new">[NEW]</strong> — — → $1,192,581,569 (Δ $+1,192,581,569) <span style="color:var(--muted);font-size:.8em">[Bill Ackman]</span></li>
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): davita inc — $3,093,940,590 → $2,324,865,095 (δ $-769,075,495)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): DAVITA INC — $3,093,940,590 → $2,324,865,095 (Δ $-769,075,495) <span style="color:var(--muted);font-size:.8em">[Warren Buffett]</span></li>
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): siriusxm holdings inc — $3,214,608,586 → $2,511,616,999 (δ $-702,991,587)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): SIRIUSXM HOLDINGS INC — $3,214,608,586 → $2,511,616,999 (Δ $-702,991,587) <span style="color:var(--muted);font-size:.8em">[Warren Buffett]</span></li>
+</ul>
+</div><div class="tab-panel" id="panel-firms">
+<ul class="trades">
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): alphabet inc — $23,523,689,772 → $11,871,367,661 (δ $-11,652,322,111)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): ALPHABET INC — $23,523,689,772 → $11,871,367,661 (Δ $-11,652,322,111) <span style="color:var(--muted);font-size:.8em">[Berkshire Hathaway Inc]</span></li>
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): alphabet inc — $9,606,489,032 → $1,028,454,775 (δ $-8,578,034,257)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): ALPHABET INC — $9,606,489,032 → $1,028,454,775 (Δ $-8,578,034,257) <span style="color:var(--muted);font-size:.8em">[Berkshire Hathaway Inc]</span></li>
+<li class="buy-side" data-side="buy" data-text="berkshire hathaway inc (berkshire hathaway inc): moodys corp — $32,655,532 → $5,507,110,938 (δ $+5,474,455,406)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): MOODYS CORP — $32,655,532 → $5,507,110,938 (Δ $+5,474,455,406) <span style="color:var(--muted);font-size:.8em">[Berkshire Hathaway Inc]</span></li>
+<li class="buy-side" data-side="buy" data-text="berkshire hathaway inc (berkshire hathaway inc): occidental pete corp — $12,868,205,304 → $17,221,193,015 (δ $+4,352,987,711)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): OCCIDENTAL PETE CORP — $12,868,205,304 → $17,221,193,015 (Δ $+4,352,987,711) <span style="color:var(--muted);font-size:.8em">[Berkshire Hathaway Inc]</span></li>
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): delta air lines inc — $5,368,591,200 → $2,646,532,635 (δ $-2,722,058,565)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): DELTA AIR LINES INC — $5,368,591,200 → $2,646,532,635 (Δ $-2,722,058,565) <span style="color:var(--muted);font-size:.8em">[Berkshire Hathaway Inc]</span></li>
+<li class="buy-side" data-side="buy" data-text="citadel advisors (citadel advisors llc): ishares tr — $33,262,698 → $2,652,522,508 (δ $+2,619,259,810)">Citadel Advisors (CITADEL ADVISORS LLC): ISHARES TR — $33,262,698 → $2,652,522,508 (Δ $+2,619,259,810) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): brookfield corp [new] — — → $2,415,946,008 (δ $+2,415,946,008)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): BROOKFIELD CORP <strong class="tag-new">[NEW]</strong> — — → $2,415,946,008 (Δ $+2,415,946,008) <span style="color:var(--muted);font-size:.8em">[Pershing Square Capital Management]</span></li>
+<li class="buy-side" data-side="buy" data-text="berkshire hathaway inc (berkshire hathaway inc): chevron corporation — $9,655,809,914 → $12,052,286,868 (δ $+2,396,476,954)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): CHEVRON CORPORATION — $9,655,809,914 → $12,052,286,868 (Δ $+2,396,476,954) <span style="color:var(--muted);font-size:.8em">[Berkshire Hathaway Inc]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): amazon com inc [new] — — → $2,385,104,083 (δ $+2,385,104,083)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): AMAZON COM INC <strong class="tag-new">[NEW]</strong> — — → $2,385,104,083 (Δ $+2,385,104,083) <span style="color:var(--muted);font-size:.8em">[Pershing Square Capital Management]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): uber technologies inc [new] — — → $2,154,934,398 (δ $+2,154,934,398)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): UBER TECHNOLOGIES INC <strong class="tag-new">[NEW]</strong> — — → $2,154,934,398 (Δ $+2,154,934,398) <span style="color:var(--muted);font-size:.8em">[Pershing Square Capital Management]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): microsoft corp [new] — — → $2,092,970,053 (δ $+2,092,970,053)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): MICROSOFT CORP <strong class="tag-new">[NEW]</strong> — — → $2,092,970,053 (Δ $+2,092,970,053) <span style="color:var(--muted);font-size:.8em">[Pershing Square Capital Management]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): restaurant brands intl inc [new] — — → $1,673,501,194 (δ $+1,673,501,194)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): RESTAURANT BRANDS INTL INC <strong class="tag-new">[NEW]</strong> — — → $1,673,501,194 (Δ $+1,673,501,194) <span style="color:var(--muted);font-size:.8em">[Pershing Square Capital Management]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): meta platforms inc [new] — — → $1,522,358,404 (δ $+1,522,358,404)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): META PLATFORMS INC <strong class="tag-new">[NEW]</strong> — — → $1,522,358,404 (Δ $+1,522,358,404) <span style="color:var(--muted);font-size:.8em">[Pershing Square Capital Management]</span></li>
+<li class="buy-side" data-side="buy" data-text="citadel advisors (citadel advisors llc): state str spdr dow jones ind — $138,124,095 → $1,550,013,921 (δ $+1,411,889,826)">Citadel Advisors (CITADEL ADVISORS LLC): STATE STR SPDR DOW JONES IND — $138,124,095 → $1,550,013,921 (Δ $+1,411,889,826) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="buy-side" data-side="buy" data-text="citadel advisors (citadel advisors llc): nvidia corporation — $274,005,047 → $1,581,655,923 (δ $+1,307,650,876)">Citadel Advisors (CITADEL ADVISORS LLC): NVIDIA CORPORATION — $274,005,047 → $1,581,655,923 (Δ $+1,307,650,876) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="buy-side" data-side="buy" data-text="citadel advisors (citadel advisors llc): micron technology inc — $131,755,278 → $1,434,471,005 (δ $+1,302,715,727)">Citadel Advisors (CITADEL ADVISORS LLC): MICRON TECHNOLOGY INC — $131,755,278 → $1,434,471,005 (Δ $+1,302,715,727) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="buy-side" data-side="buy" data-text="citadel advisors (citadel advisors llc): apple inc — $24,468,571 → $1,323,228,067 (δ $+1,298,759,496)">Citadel Advisors (CITADEL ADVISORS LLC): APPLE INC — $24,468,571 → $1,323,228,067 (Δ $+1,298,759,496) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="buy-side" data-side="buy" data-text="pershing square capital management (pershing square capital management, l.p.): howard hughes holdings inc [new] — — → $1,192,581,569 (δ $+1,192,581,569)">Pershing Square Capital Management (Pershing Square Capital Management, L.P.): HOWARD HUGHES HOLDINGS INC <strong class="tag-new">[NEW]</strong> — — → $1,192,581,569 (Δ $+1,192,581,569) <span style="color:var(--muted);font-size:.8em">[Pershing Square Capital Management]</span></li>
+<li class="sell-side" data-side="sell" data-text="bridgewater associates (bridgewater associates, lp): state str spdr s&amp;p 500 etf t — $3,973,046,405 → $2,838,644,353 (δ $-1,134,402,052)">Bridgewater Associates (Bridgewater Associates, LP): STATE STR SPDR S&amp;P 500 ETF T — $3,973,046,405 → $2,838,644,353 (Δ $-1,134,402,052) <span style="color:var(--muted);font-size:.8em">[Bridgewater Associates]</span></li>
+<li class="buy-side" data-side="buy" data-text="citadel advisors (citadel advisors llc): taiwan semiconductor manufac — $251,172,688 → $1,363,700,909 (δ $+1,112,528,221)">Citadel Advisors (CITADEL ADVISORS LLC): TAIWAN SEMICONDUCTOR MANUFAC — $251,172,688 → $1,363,700,909 (Δ $+1,112,528,221) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="sell-side" data-side="sell" data-text="renaissance technologies (renaissance technologies llc): meta platforms inc — $1,139,611,745 → $144,961,379 (δ $-994,650,366)">Renaissance Technologies (RENAISSANCE TECHNOLOGIES LLC): META PLATFORMS INC — $1,139,611,745 → $144,961,379 (Δ $-994,650,366) <span style="color:var(--muted);font-size:.8em">[Renaissance Technologies]</span></li>
+<li class="sell-side" data-side="sell" data-text="renaissance technologies (renaissance technologies llc): nvidia corporation — $1,418,869,170 → $440,696,066 (δ $-978,173,104)">Renaissance Technologies (RENAISSANCE TECHNOLOGIES LLC): NVIDIA CORPORATION — $1,418,869,170 → $440,696,066 (Δ $-978,173,104) <span style="color:var(--muted);font-size:.8em">[Renaissance Technologies]</span></li>
+<li class="sell-side" data-side="sell" data-text="citadel advisors (citadel advisors llc): space exploration techn corp [exited] — $876,491,980 → — (δ $-876,491,980)">Citadel Advisors (CITADEL ADVISORS LLC): SPACE EXPLORATION TECHN CORP <strong class="tag-exit">[EXITED]</strong> — $876,491,980 → — (Δ $-876,491,980) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): davita inc — $3,093,940,590 → $2,324,865,095 (δ $-769,075,495)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): DAVITA INC — $3,093,940,590 → $2,324,865,095 (Δ $-769,075,495) <span style="color:var(--muted);font-size:.8em">[Berkshire Hathaway Inc]</span></li>
+<li class="sell-side" data-side="sell" data-text="citadel advisors (citadel advisors llc): alphabet inc — $899,413,175 → $161,530,005 (δ $-737,883,170)">Citadel Advisors (CITADEL ADVISORS LLC): ALPHABET INC — $899,413,175 → $161,530,005 (Δ $-737,883,170) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="sell-side" data-side="sell" data-text="citadel advisors (citadel advisors llc): jpmorgan chase &amp; co — $724,860,828 → $19,004,207 (δ $-705,856,621)">Citadel Advisors (CITADEL ADVISORS LLC): JPMORGAN CHASE &amp; CO — $724,860,828 → $19,004,207 (Δ $-705,856,621) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="sell-side" data-side="sell" data-text="berkshire hathaway inc (berkshire hathaway inc): siriusxm holdings inc — $3,214,608,586 → $2,511,616,999 (δ $-702,991,587)">Berkshire Hathaway Inc (Berkshire Hathaway Inc): SIRIUSXM HOLDINGS INC — $3,214,608,586 → $2,511,616,999 (Δ $-702,991,587) <span style="color:var(--muted);font-size:.8em">[Berkshire Hathaway Inc]</span></li>
+<li class="buy-side" data-side="buy" data-text="citadel advisors (citadel advisors llc): western digital corp [new] — — → $696,712,587 (δ $+696,712,587)">Citadel Advisors (CITADEL ADVISORS LLC): WESTERN DIGITAL CORP <strong class="tag-new">[NEW]</strong> — — → $696,712,587 (Δ $+696,712,587) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+<li class="sell-side" data-side="sell" data-text="renaissance technologies (renaissance technologies llc): intel corp — $1,022,356,867 → $326,535,257 (δ $-695,821,610)">Renaissance Technologies (RENAISSANCE TECHNOLOGIES LLC): INTEL CORP — $1,022,356,867 → $326,535,257 (Δ $-695,821,610) <span style="color:var(--muted);font-size:.8em">[Renaissance Technologies]</span></li>
+<li class="sell-side" data-side="sell" data-text="citadel advisors (citadel advisors llc): abbvie inc — $797,644,194 → $106,632,085 (δ $-691,012,109)">Citadel Advisors (CITADEL ADVISORS LLC): ABBVIE INC — $797,644,194 → $106,632,085 (Δ $-691,012,109) <span style="color:var(--muted);font-size:.8em">[Citadel Advisors]</span></li>
+</ul>
+</div><div class="tab-panel" id="panel-watchlist">
+<div class="watch-grid">
+<div class='watch-card'><h4>Politicians</h4><ul><li>Nancy Pelosi</li><li>Paul Pelosi</li><li>Donald Trump</li><li>Josh Gottheimer</li><li>Michael McCaul</li><li>Ro Khanna</li><li>Dan Crenshaw</li><li>Tommy Tuberville</li><li>Debbie Wasserman Schultz</li><li>Kevin Hern</li><li>Scott Franklin</li><li>Neal Dunn</li><li>Rob Bresnahan</li><li>Cleo Fields</li></ul></div>
+<div class='watch-card'><h4>Public Figures</h4><ul><li>Elon Musk</li><li>Jensen Huang</li><li>Tim Cook</li><li>Satya Nadella</li><li>Jeff Bezos</li><li>Mark Zuckerberg</li><li>Jamie Dimon</li><li>Sundar Pichai</li></ul></div>
+<div class='watch-card'><h4>Investors</h4><ul><li>Warren Buffett</li><li>Bill Ackman</li><li>Michael Burry</li><li>David Tepper</li><li>Stanley Druckenmiller</li><li>Seth Klarman</li><li>George Soros</li></ul></div>
+<div class='watch-card'><h4>Firms</h4><ul><li>Berkshire Hathaway Inc</li><li>Pershing Square Capital Management</li><li>Citadel Advisors</li><li>Bridgewater Associates</li><li>Renaissance Technologies</li><li>Appaloosa Management</li><li>Duquesne Family Office</li><li>Baupost Group</li><li>Soros Fund Management</li><li>Scion Asset Management</li></ul></div>
+</div>
+</div>
+<section class="archive"><h2 class="sec">Archive</h2><ul>
+<li><a href="2026-10-08.html">2026-10-08</a></li>
+</ul></section>
+<footer class="site">
+Methodology: congressional PTRs disclose amount ranges, not exact values; trades shown as filed.
+Form 4 covers open-market buys (P) and sells (S) only. 13F is quarterly with a ~45-day lag.<br/>
+For informational purposes only — not financial advice. Data: SEC EDGAR, House Clerk, Senate eFD.
+</footer>
+</div>
+<script>
+(function(){
+  var tabs=document.querySelectorAll('.tab-btn'),panels=document.querySelectorAll('.tab-panel');
+  tabs.forEach(function(btn){btn.addEventListener('click',function(){
+    tabs.forEach(function(b){b.classList.remove('active')});
+    panels.forEach(function(p){p.classList.remove('active')});
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    applyFilters();
+  });});
+  var side='all',q='';
+  function applyFilters(){
+    document.querySelectorAll('.tab-panel.active ul.trades li').forEach(function(li){
+      var okSide=(side==='all')||(li.dataset.side===side);
+      var okQ=!q||li.dataset.text.indexOf(q)!==-1;
+      li.classList.toggle('hidden',!(okSide&&okQ));
+    });
+    window.applyFilters=applyFilters;
+  }
+  document.querySelectorAll('#side-filter button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('#side-filter button').forEach(function(x){x.classList.remove('active')});
+      b.classList.add('active');side=b.dataset.side;applyFilters();
+    });
+  });
+  document.getElementById('search').addEventListener('input',function(e){q=e.target.value.trim().toLowerCase();applyFilters();});
+  window.applyFilters=applyFilters;
+})();
+</script>
+</body>
+</html>
