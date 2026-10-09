@@ -1,0 +1,7 @@
+title: Daily Insider Trading Report
+description: Daily insider trading report tracking congressional stock trades, SEC Form 4 insider transactions, and 13F institutional holdings for top politicians, billionaires, and investment firms. Updated every trading day.
+url: https://undeterred404.github.io
+baseurl: /daily-insider-trades
+theme: minima
+plugins:
+  - jekyll-seo-tag
