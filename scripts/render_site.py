@@ -132,8 +132,8 @@ def parse_report(md_path):
     if text.startswith("---\n"):
         end = text.find("\n---\n", 4)
         if end != -1:
-            text = text[end + 5:]
-    lines = text.splitlines()
+            text = text[end + 5:].lstrip("\n")
+    lines = [ln for ln in text.splitlines() if ln.strip()]
     title = lines[0].lstrip("# ").strip() if lines else md_path.stem
     lede = ""
     sections = []
