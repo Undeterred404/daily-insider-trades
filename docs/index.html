@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Daily Insider Trading Report</title>
+<meta name="description" content="Daily insider trading report tracking congressional stock trades, SEC Form 4 insider transactions, and 13F institutional holdings for top politicians, billionaires, and investment firms."/>
+<style>
+:root{--bg:#f3f6fa;--card:#fff;--ink:#16233a;--muted:#5c6f88;--accent:#0b5fff;
+--buy:#0e7a3d;--buy-bg:#e7f6ec;--sell:#c03221;--sell-bg:#fdecea;--line:#dfe6f0}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+header.hero{background:linear-gradient(135deg,#081c36 0%,#0f3a75 100%);color:#fff;padding:2.6rem 1.25rem 2rem}
+.hero-inner{max-width:1000px;margin:0 auto}
+.hero h1{margin:0 0 .4rem;font-size:1.9rem;letter-spacing:-.01em}
+.hero .sub{margin:0 0 1rem;opacity:.88}
+.hero nav{font-size:.9rem;opacity:.92}.hero nav a{color:#a9c6ff;margin-right:1.2rem}
+.wrap{max-width:1000px;margin:0 auto;padding:0 1.25rem 3.5rem}
+.controls{position:sticky;top:0;background:var(--bg);padding:1rem 0 .8rem;z-index:5}
+.tabs{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:.8rem}
+.tab-btn{border:1px solid var(--line);background:var(--card);padding:.6rem 1.15rem;border-radius:999px;cursor:pointer;font-size:.95rem;color:var(--ink)}
+.tab-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.tab-btn .count{display:inline-block;min-width:1.5em;text-align:center;background:rgba(0,0,0,.08);border-radius:999px;font-size:.8em;padding:.05em .4em;margin-left:.45em}
+.tab-btn.active .count{background:rgba(255,255,255,.25)}
+.filters{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:transparent;padding:.5rem 1rem;cursor:pointer;font-size:.9rem;color:var(--muted)}
+.seg button.active{background:var(--ink);color:#fff;font-weight:600}
+#search{flex:1;min-width:220px;border:1px solid var(--line);border-radius:999px;padding:.55rem 1.1rem;font-size:.95rem;background:var(--card)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.tab-panel h3{font-size:1.05rem;margin:1.4rem 0 .6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-size:.85rem}
+ul.trades{list-style:none;padding:0;margin:0;display:grid;gap:.7rem}
+ul.trades li{background:var(--card);border:1px solid var(--line);border-left:5px solid #9fb0c7;border-radius:10px;padding:.85rem 1.05rem;box-shadow:0 1px 2px rgba(16,35,58,.05)}
+ul.trades li.buy-side{border-left-color:var(--buy)}
+ul.trades li.sell-side{border-left-color:var(--sell)}
+ul.trades li.hidden{display:none}
+p.note{color:var(--muted);font-style:italic;background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:.8rem 1rem}
+strong.buy{color:var(--buy);background:var(--buy-bg);padding:.1em .5em;border-radius:6px;font-size:.85em}
+strong.sell{color:var(--sell);background:var(--sell-bg);padding:.1em .5em;border-radius:6px;font-size:.85em}
+.tag-new{color:var(--buy);font-weight:700}.tag-exit{color:var(--sell);font-weight:700}
+.watch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+.watch-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem}
+.watch-card h4{margin:0 0 .5rem;font-size:.95rem}
+.watch-card ul{margin:0;padding-left:1.1rem;font-size:.92rem;color:var(--muted)}
+.archive{margin-top:2.5rem}.archive ul{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
+.archive li a{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.4rem .95rem;font-size:.9rem}
+footer.site{border-top:1px solid var(--line);margin-top:2.5rem;padding-top:1.2rem;color:var(--muted);font-size:.85rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.9rem;margin-top:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem}
+.card .date{font-weight:700;font-size:1.05rem}
+.card .sum{color:var(--muted);font-size:.9rem;margin:.4rem 0 .8rem}
+.card.featured{border-left:5px solid var(--accent)}
+h2.sec{font-size:1.3rem;margin:2.2rem 0 .4rem}
+@media(max-width:640px){.hero h1{font-size:1.45rem}.controls{position:static}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="hero-inner">
+<h1>Daily Insider Trading Report</h1>
+<p class="sub">What are politicians, billionaires, and Wall Street giants buying and selling? Updated every trading day.</p>
+<p class="sub" style="font-size:.85rem">Sources: SEC EDGAR (Form 4, 13F) · House Clerk disclosures · Senate eFD</p>
+<nav><a href="https://github.com/Undeterred404/daily-insider-trades">GitHub</a></nav>
+</div></header>
+<div class="wrap">
+<h2 class="sec">Reports</h2>
+<div class="cards">
+<div class="card featured"><div class="date">2026-10-08</div><div class="sum">John Fetterman (Senate, S) — Purchase  DELL INTL LLC/EMC CORP  Rate/Coupon: 5.6%  Matures: 2033-09-15 — $1,001 - $15,000 (traded 2026-09-16, filed 2026-10-07)</div><a href="reports/2026-10-08.html">Read report →</a></div>
+</div>
+<footer class="site">
+For informational purposes only — not financial advice.
+<a href="https://github.com/Undeterred404/daily-insider-trades">How this report is built</a>
+</footer>
+</div>
+</body>
+</html>
