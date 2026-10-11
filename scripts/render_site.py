@@ -18,10 +18,16 @@ import sys
 import yaml
 from pathlib import Path
 
-MIRROR = Path(sys.argv[1] if len(sys.argv) > 1 else
-              str(Path.home() / "workspace/insider-tracker/github-mirror"))
-DOCS = MIRROR / "docs"
-REPORTS_DIR = DOCS / "reports"
+DEFAULT_MIRROR = str(Path.home() / "workspace/insider-tracker/github-mirror")
+MIRROR = DOCS = REPORTS_DIR = None
+
+
+def _configure(mirror_dir=None):
+    """Set the module path globals. Never reads the importer's sys.argv."""
+    global MIRROR, DOCS, REPORTS_DIR
+    MIRROR = Path(mirror_dir) if mirror_dir else Path(DEFAULT_MIRROR)
+    DOCS = MIRROR / "docs"
+    REPORTS_DIR = DOCS / "reports"
 
 CSS = """
 :root{--bg:#f3f6fa;--card:#fff;--ink:#16233a;--muted:#5c6f88;--accent:#0b5fff;
@@ -346,7 +352,8 @@ def first_bullet_summary(md_path):
     return "No new watched trades filed."
 
 
-def main():
+def main(mirror_dir=None):
+    _configure(mirror_dir)
     wl = load_watchlists()
     report_mds = sorted(REPORTS_DIR.glob("2*.md"), reverse=True)
     all_dates = [p.stem for p in report_mds]
@@ -401,4 +408,4 @@ For informational purposes only — not financial advice.
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1] if len(sys.argv) > 1 else None)
