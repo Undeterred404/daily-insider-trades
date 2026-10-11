@@ -1,48 +1,20 @@
 #!/usr/bin/env python3
 """Push every file in the mirror dir to the GitHub repo via Contents API.
 
+All GitHub calls go through gh_client (in-process urllib), never a
+subprocess, so this is safe on detached cron runs.
+
 Usage: push_repo.py [mirror_dir]   (default: ~/workspace/insider-tracker/github-mirror)
 One commit per file. Skips __pycache__ and dotfiles.
 """
-import base64
-import json
-import subprocess
 import sys
 from pathlib import Path
 
-GH_API = str(Path.home() / "workspace/skills/github/bin/gh-api")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import gh_client  # noqa: E402
+
 OWNER, REPO = "Undeterred404", "daily-insider-trades"
-
-
-def get_sha(rel):
-    r = subprocess.run(
-        [GH_API, "GET", f"/repos/{OWNER}/{REPO}/contents/{rel}"],
-        capture_output=True, text=True,
-    )
-    if r.returncode != 0:
-        return None
-    try:
-        return json.loads(r.stdout).get("sha")
-    except json.JSONDecodeError:
-        return None
-
-
-def put(rel: str, data: bytes, message: str):
-    payload = {"message": message, "content": base64.b64encode(data).decode()}
-    sha = get_sha(rel)
-    if sha:
-        payload["sha"] = sha
-    tmp = Path("/tmp/gh-put.json")
-    tmp.write_text(json.dumps(payload))
-    r = subprocess.run(
-        [GH_API, "PUT", f"/repos/{OWNER}/{REPO}/contents/{rel}", "--data", f"@{tmp}"],
-        capture_output=True, text=True,
-    )
-    if r.returncode != 0:
-        print(f"FAIL {rel}: {r.stderr.strip()[:300]}")
-        return False
-    print(f"ok {rel}")
-    return True
 
 
 def main():
@@ -55,7 +27,7 @@ def main():
     ok = True
     for p in files:
         rel = p.relative_to(mirror).as_posix()
-        ok &= put(rel, p.read_bytes(), f"Add {rel}")
+        ok &= gh_client.put_file(OWNER, REPO, rel, p.read_bytes(), f"Add {rel}")
     print("ALL DONE" if ok else "SOME FAILURES")
 
 
