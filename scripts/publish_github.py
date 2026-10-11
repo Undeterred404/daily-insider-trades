@@ -1,58 +1,27 @@
 #!/usr/bin/env python3
 """Publish a daily report to the GitHub Pages site.
 
-Copies reports/<date>.md into the repo mirror, rebuilds docs/index.md,
-and pushes changed files to Undeterred404/daily-insider-trades via the
-GitHub Contents API (handles create vs update via sha lookup).
+Copies reports/<date>.md into the repo mirror, rebuilds the standalone
+HTML site in-process, and pushes changed files to
+Undeterred404/daily-insider-trades via the GitHub Contents API.
+
+All GitHub calls go through gh_client (in-process urllib), never a
+subprocess, so this is safe on detached cron runs.
 
 Usage: publish_github.py --date YYYY-MM-DD
 """
 import argparse
-import base64
-import json
-import subprocess
 import sys
 from pathlib import Path
 
-GH_API = str(Path.home() / "workspace/skills/github/bin/gh-api")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import gh_client  # noqa: E402
+import render_site  # noqa: E402
+
 OWNER, REPO = "Undeterred404", "daily-insider-trades"
 TRACKER = Path.home() / "workspace/insider-tracker"
 MIRROR = TRACKER / "github-mirror"
-TMP = Path("/tmp/gh-publish.json")
-
-
-def gh(method, api_path, data=None):
-    cmd = [GH_API, method, api_path]
-    if data is not None:
-        TMP.write_text(json.dumps(data))
-        cmd += ["--data", f"@{TMP}"]
-    r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
-    return r.returncode, r.stdout, r.stderr
-
-
-def get_sha(rel):
-    code, out, _ = gh("GET", f"/repos/{OWNER}/{REPO}/contents/{rel}")
-    if code != 0:
-        return None
-    try:
-        return json.loads(out).get("sha")
-    except json.JSONDecodeError:
-        return None
-
-
-def push_file(rel, message):
-    local = MIRROR / rel
-    content = base64.b64encode(local.read_bytes()).decode()
-    payload = {"message": message, "content": content}
-    sha = get_sha(rel)
-    if sha:
-        payload["sha"] = sha
-    code, out, err = gh("PUT", f"/repos/{OWNER}/{REPO}/contents/{rel}", payload)
-    if code != 0:
-        print(f"FAIL {rel}: {err.strip()[:300]}")
-        return False
-    print(f"pushed {rel}" + (" (updated)" if sha else " (new)"))
-    return True
 
 
 def main():
@@ -66,7 +35,7 @@ def main():
         return 1
     dst = MIRROR / "docs" / "reports" / f"{args.date}.md"
     body = src.read_text()
-    # Prepend Jekyll front matter so the report uses the styled tabbed layout.
+    # Prepend Jekyll front matter so the .md copy renders if ever viewed raw.
     # Strip any existing front matter first (idempotent re-runs).
     if body.startswith("---\n"):
         end = body.find("\n---\n", 4)
@@ -76,21 +45,19 @@ def main():
     front = f'---\nlayout: report\ntitle: "{title}"\n---\n\n'
     dst.write_text(front + body)
 
-    r = subprocess.run(
-        [sys.executable, str(MIRROR / "scripts" / "render_site.py")],
-        capture_output=True, text=True,
-    )
-    print(r.stdout.strip())
-    if r.returncode != 0:
-        print(f"site render failed: {r.stderr.strip()[:300]}", file=sys.stderr)
-        return 1
+    # Rebuild the standalone HTML site in-process (no subprocess).
+    render_site.main(str(MIRROR))
 
     ok = True
     msg = f"Daily insider trading report {args.date}"
-    ok &= push_file(f"docs/reports/{args.date}.md", msg)
-    ok &= push_file(f"docs/reports/{args.date}.html", msg)
-    ok &= push_file("docs/index.html", msg)
-    ok &= push_file("docs/.nojekyll", msg)
+    for rel in (
+        f"docs/reports/{args.date}.md",
+        f"docs/reports/{args.date}.html",
+        "docs/index.html",
+        "docs/.nojekyll",
+    ):
+        data = (MIRROR / rel).read_bytes()
+        ok &= gh_client.put_file(OWNER, REPO, rel, data, msg)
     print("PUBLISH OK" if ok else "PUBLISH HAD FAILURES")
     return 0 if ok else 1
 
