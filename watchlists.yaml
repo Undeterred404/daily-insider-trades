@@ -19,6 +19,7 @@ politicians:
   - Rob Bresnahan
   - Cleo Fields
   - Maria Elvira Salazar  # R-FL; 14-trade near-full-portfolio liquidation filed 2026-10-07
+  - Gilbert Cisneros    # D-CA31; 57 trades filed 2026-10-05/12, most active House trader in window
 
 investors:
   # Individuals tracked via 13F filings (their funds) + Form 4 where applicable
@@ -54,6 +55,7 @@ public_figures:
   - Tenev Vladimir    # Robinhood CEO — ~$73M HOOD sells filed 2026-10-07
   - Ullal Jayshree    # Arista CEO — ~$113M ANET sells filed 2026-10-09
   - Sahin Ugur        # BioNTech CEO — ~$30M BNTX sells across 2026-10-06/09
+  - Durban Egon       # Dell director / Silver Lake co-CEO — ~$145M DELL sells filed 2026-10-06/09 (distribution burst; 1 filing prior)
 
 firms:
   # Major investment firms tracked via 13F
