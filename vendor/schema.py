@@ -21,26 +21,30 @@ COLUMNS = """first_name VARCHAR, last_name VARCHAR, office VARCHAR,
 TABLES = ("senate_trades", "house_trades")
 
 
-def _select(table, chamber):
-    return rf"""SELECT '{chamber}' AS chamber, last_name,
+def _select(table, chamber, filings):
+    return rf"""SELECT '{chamber}' AS chamber, t.last_name,
             -- Senate Exchange rows pack both legs into one cell ("--  AMCR" =
             -- gave up an untickered holding, received AMCR). Take the trailing
             -- symbol, i.e. what they hold afterwards. Plain tickers pass
             -- through; House rows have no ticker cell and fall to the guess.
             coalesce(
-                nullif(nullif(regexp_extract(trim(ticker), '([A-Z.\-]+)$', 1),
+                nullif(nullif(regexp_extract(trim(t.ticker), '([A-Z.\-]+)$', 1),
                               '--'), ''),
-                ticker_guess) AS tkr,
-            asset_name, tx_type, amount_low, amount_high,
-            try_strptime(tx_date, '%m/%d/%Y')::DATE AS txn_date,
-            try_strptime(filed, '%m/%d/%Y')::DATE AS filed_date,
-            date_diff('day', try_strptime(tx_date, '%m/%d/%Y')::DATE,
-                             try_strptime(filed, '%m/%d/%Y')::DATE) AS lag_days,
+                t.ticker_guess) AS tkr,
+            t.asset_name, t.tx_type, t.amount_low, t.amount_high,
+            try_strptime(t.tx_date, '%m/%d/%Y')::DATE AS txn_date,
+            try_strptime(t.filed, '%m/%d/%Y')::DATE AS filed_date,
+            date_diff('day', try_strptime(t.tx_date, '%m/%d/%Y')::DATE,
+                             try_strptime(t.filed, '%m/%d/%Y')::DATE) AS lag_days,
             -- secondary columns: filtering, auditing, provenance
-            asset_type, owner,
-            ticker IS NULL AND ticker_guess IS NOT NULL AS tkr_recovered,
-            first_name, office, link
-        FROM {table}"""
+            t.asset_type, t.owner,
+            t.ticker IS NULL AND t.ticker_guess IS NOT NULL AS tkr_recovered,
+            t.first_name, t.office, t.link,
+            -- when the scraper first processed this filing; the daily report
+            -- keys "newly processed" off this, not filed_date, so filings the
+            -- clerk publishes late are still reported once (2026-10-19 fix).
+            f.fetched_at AS fetched_at
+        FROM {table} t LEFT JOIN {filings} f ON t.link = f.link"""
 
 
 def ensure_schema(con):
@@ -53,9 +57,9 @@ def ensure_schema(con):
     for t in TABLES:
         con.execute(f"CREATE TABLE IF NOT EXISTS {t} ({COLUMNS})")
     con.execute("CREATE OR REPLACE VIEW trades AS "
-                + _select("senate_trades", "S")
+                + _select("senate_trades", "S", "senate_filings")
                 + " UNION ALL "
-                + _select("house_trades", "H"))
+                + _select("house_trades", "H", "house_filings"))
 
 
 def parse_amount(text):
