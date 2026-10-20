@@ -221,7 +221,7 @@ def main(years, limit=None):
     con.execute("""CREATE TABLE IF NOT EXISTS house_filings (
         doc_id VARCHAR PRIMARY KEY, year INTEGER, last_name VARCHAR,
         first_name VARCHAR, office VARCHAR, filed VARCHAR, link VARCHAR,
-        status VARCHAR, n_rows INTEGER)""")
+        status VARCHAR, n_rows INTEGER, fetched_at TIMESTAMP)""")
     done = {r[0] for r in con.execute("SELECT doc_id FROM house_filings").fetchall()}
 
     s = _session()
@@ -258,7 +258,8 @@ def main(years, limit=None):
                     " tx_date, owner, ticker, asset_name, asset_type, tx_type,"
                     " amount_raw, amount_low, amount_high FROM df")
             con.execute(
-                "INSERT INTO house_filings VALUES (?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO house_filings VALUES (?,?,?,?,?,?,?,?,?,"
+                " CURRENT_TIMESTAMP)",
                 [f["doc_id"], year, f["last_name"], f["first_name"], f["office"],
                  f["filed"], f["link"], status, len(rows)])
             seen[status] += 1
