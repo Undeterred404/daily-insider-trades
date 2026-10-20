@@ -172,12 +172,13 @@ def _ensure_filings(con):
     con.execute("""CREATE TABLE IF NOT EXISTS senate_filings (
         link VARCHAR PRIMARY KEY, last_name VARCHAR, first_name VARCHAR,
         office VARCHAR, filed VARCHAR, status VARCHAR, n_rows INTEGER,
-        err VARCHAR)""")
+        err VARCHAR, fetched_at TIMESTAMP)""")
     con.execute("""
         INSERT INTO senate_filings
-            (link, last_name, first_name, office, filed, status, n_rows)
+            (link, last_name, first_name, office, filed, status, n_rows,
+             fetched_at)
         SELECT link, min(last_name), min(first_name), min(office), min(filed),
-               'ok', count(*)
+               'ok', count(*), TIMESTAMP '2020-01-01 00:00:00'
         FROM senate_trades WHERE link IS NOT NULL GROUP BY link
         ON CONFLICT (link) DO NOTHING""")
 
@@ -231,9 +232,18 @@ def main(limit=None):
             )
         # Recorded whatever happened -- this row is the resume key, so a filing
         # that yielded nothing still counts as attempted and is not re-fetched.
+        # fetched_at is set once: retries of a transiently-failed filing must
+        # not make it look newly processed (2026-10-19 fix).
         con.execute(
-            "INSERT OR REPLACE INTO senate_filings (link, last_name, first_name,"
-            " office, filed, status, n_rows, err) VALUES (?,?,?,?,?,?,?,?)",
+            "INSERT INTO senate_filings (link, last_name, first_name,"
+            " office, filed, status, n_rows, err, fetched_at)"
+            " VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)"
+            " ON CONFLICT (link) DO UPDATE SET"
+            " last_name=excluded.last_name, first_name=excluded.first_name,"
+            " office=excluded.office, filed=excluded.filed,"
+            " status=excluded.status, n_rows=excluded.n_rows, err=excluded.err,"
+            " fetched_at=COALESCE(senate_filings.fetched_at,"
+            " excluded.fetched_at)",
             [link, last, first, office, filed, status, len(rows), err]
         )
         seen[status] += 1
