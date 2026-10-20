@@ -78,10 +78,14 @@ def main():
                    txn_date, filed_date, owner
             FROM (SELECT DISTINCT chamber, last_name, first_name, office,
                                   tkr, asset_name, tx_type, amount_low,
-                                  amount_high, txn_date, filed_date, owner
+                                  amount_high, txn_date, filed_date, owner,
+                                  fetched_at
                   FROM trades)
-            WHERE filed_date >= ?
-            ORDER BY filed_date DESC, amount_high DESC NULLS LAST
+            -- "newly processed" = first pulled by the scraper in the window,
+            -- not filed in the window: the clerk publishes some PTRs days
+            -- late, and a filed_date window silently dropped those forever.
+            WHERE fetched_at >= ?
+            ORDER BY fetched_at DESC, amount_high DESC NULLS LAST
         """, [cutoff]).fetchall()
         ccon.close()
     except Exception as e:
