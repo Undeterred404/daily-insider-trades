@@ -20,6 +20,10 @@ politicians:
   - Cleo Fields
   - Maria Elvira Salazar  # R-FL; 14-trade near-full-portfolio liquidation filed 2026-10-07
   - Gilbert Cisneros    # D-CA31; 57 trades filed 2026-10-05/12, most active House trader in window
+  - Lisa McClain       # R-MI09; 9 trades filed 2026-10-12, among most active House filers in window (added 2026-10-26)
+  - Jonathan Jackson   # D-IL01; 6 trades filed 2026-10-19, incl. $50-100K DDOG/EL buys (added 2026-10-26)
+  - David J. Taylor    # R-OH02; 9 trades filed 2026-10-01/15 (added 2026-10-26)
+  - Suzan DelBene      # D-WA01; 9 trades filed 2026-09-30/10-14, incl. $250-500K blocks (added 2026-10-26)
 
 investors:
   # Individuals tracked via 13F filings (their funds) + Form 4 where applicable
@@ -56,6 +60,7 @@ public_figures:
   - Ullal Jayshree    # Arista CEO — ~$113M ANET sells filed 2026-10-09
   - Sahin Ugur        # BioNTech CEO — ~$30M BNTX sells across 2026-10-06/09
   - Durban Egon       # Dell director / Silver Lake co-CEO — ~$145M DELL sells filed 2026-10-06/09 (distribution burst; 1 filing prior)
+  - Cohen Ryan        # GameStop CEO — ~$33M GME open-market buys filed 2026-09-29/10-13 (added 2026-10-26)
 
 firms:
   # Major investment firms tracked via 13F
