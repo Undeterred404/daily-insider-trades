@@ -14,8 +14,6 @@ politicians:
   - Tommy Tuberville
   - Debbie Wasserman Schultz
   - Kevin Hern
-  - Scott Franklin
-  - Neal Dunn
   - Rob Bresnahan
   - Cleo Fields
   - Maria Elvira Salazar  # R-FL; 14-trade near-full-portfolio liquidation filed 2026-10-07
@@ -25,6 +23,10 @@ politicians:
   - David J. Taylor    # R-OH02; 9 trades filed 2026-10-01/15 (added 2026-10-26)
   - Suzan DelBene      # D-WA01; 9 trades filed 2026-09-30/10-14, incl. $250-500K blocks (added 2026-10-26)
   - Pete Sessions      # R-TX17; 17 trades filed 2026-10-27, near-full-portfolio liquidation incl. $250-500K full sales of MSFT/COST/AAPL (added 2026-11-02)
+  - Richard Blumenthal # D-CT Senate; 32 trades filed 2026-10-26 incl. $500K-$1M full sale of Captivate Network LP (added 2026-11-09)
+  - David McCormick    # R-PA Senate; 19 trades filed 2026-10-29, multiple $500K-$1M muni-bond legs (added 2026-11-09)
+  - Alan Armstrong     # R-OK Senate; 706 trades in 2026, 2nd-most-active in Congress, incl. $5M-$25M WMB sale (added 2026-11-09)
+  - April McClain Delaney # D-MD06; 322 trades in 2026, 3rd-most-active in Congress (added 2026-11-09)
 
 investors:
   # Individuals tracked via 13F filings (their funds) + Form 4 where applicable
@@ -63,6 +65,9 @@ public_figures:
   - Durban Egon       # Dell director / Silver Lake co-CEO — ~$145M DELL sells filed 2026-10-06/09 (distribution burst; 1 filing prior)
   - Cohen Ryan        # GameStop CEO — ~$33M GME open-market buys filed 2026-09-29/10-13 (added 2026-10-26)
   - Slootman Frank    # Snowflake director — ~$94.9M SNOW sells filed 2026-10-21 (300k shares, 10b5-1, ~94% cut in direct holding) (added 2026-11-02)
+  - Squeri Stephen J  # Amex chairman/CEO — ~$99M AXP sells filed 2026-11-06 (added 2026-11-09)
+  - Meister Keith A.  # Corvex founder — $44.7M MGM open-market buy + ~$48M ILMN sells filed 2026-11-03/05 (added 2026-11-09)
+  - Boersma Travis    # Dutch Bros exec chairman — ~$127M BROS sells in 14 trades filed 2026-10-30/11-04 (added 2026-11-09)
 
 firms:
   # Major investment firms tracked via 13F
