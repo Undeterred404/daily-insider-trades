@@ -27,6 +27,8 @@ politicians:
   - David McCormick    # R-PA Senate; 19 trades filed 2026-10-29, multiple $500K-$1M muni-bond legs (added 2026-11-09)
   - Alan Armstrong     # R-OK Senate; 706 trades in 2026, 2nd-most-active in Congress, incl. $5M-$25M WMB sale (added 2026-11-09)
   - April McClain Delaney # D-MD06; 322 trades in 2026, 3rd-most-active in Congress (added 2026-11-09)
+  - Thomas H. Kean Jr.  # R-NJ07; 12 trades filed 2026-10-30, 66 trades in last 12 months (added 2026-11-16)
+  - John J. McGuire     # R-VA05; 10 trades across filings 2026-11-01/06, incl. MU buys and WDC full sale (added 2026-11-16)
 
 investors:
   # Individuals tracked via 13F filings (their funds) + Form 4 where applicable
@@ -68,6 +70,9 @@ public_figures:
   - Squeri Stephen J  # Amex chairman/CEO — ~$99M AXP sells filed 2026-11-06 (added 2026-11-09)
   - Meister Keith A.  # Corvex founder — $44.7M MGM open-market buy + ~$48M ILMN sells filed 2026-11-03/05 (added 2026-11-09)
   - Boersma Travis    # Dutch Bros exec chairman — ~$127M BROS sells in 14 trades filed 2026-10-30/11-04 (added 2026-11-09)
+  - Wilhelmsen Arne Alexander # Royal Caribbean director — ~$100M+ RCL sells in 15 trades filed 2026-11-06/13 (added 2026-11-16)
+  - Stryker Ronda E   # Stryker Corp director/heir — ~$175M SYK sells in 5 trades filed 2026-11-09 (added 2026-11-16)
+  - Bechtolsheim Andreas # Arista co-founder — ~$41M+ ANET sells in 5 trades filed 2026-11-09/10 (added 2026-11-16)
 
 firms:
   # Major investment firms tracked via 13F
