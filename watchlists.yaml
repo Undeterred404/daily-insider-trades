@@ -29,6 +29,9 @@ politicians:
   - April McClain Delaney # D-MD06; 322 trades in 2026, 3rd-most-active in Congress (added 2026-11-09)
   - Thomas H. Kean Jr.  # R-NJ07; 12 trades filed 2026-10-30, 66 trades in last 12 months (added 2026-11-16)
   - John J. McGuire     # R-VA05; 10 trades across filings 2026-11-01/06, incl. MU buys and WDC full sale (added 2026-11-16)
+  - Byron Donalds      # R-FL19; 8 trades filed 2026-11-16, incl. IBKR buy and full sales of ADSK/NFLX/ZTS (added 2026-11-23)
+  - Scott H. Peters    # D-CA50; 6 trades filed 2026-11-13 incl. $500K-$1M T-bill sale; 30 trades/~$8.4M in 90 days (added 2026-11-23)
+  - Ted Cruz           # R-TX Senate; $250K-$500K partial sale of GS filed 2026-11-20 (added 2026-11-23)
 
 investors:
   # Individuals tracked via 13F filings (their funds) + Form 4 where applicable
@@ -36,8 +39,6 @@ investors:
     filer_keywords: ["BERKSHIRE HATHAWAY"]
   - name: Bill Ackman
     filer_keywords: ["PERSHING SQUARE"]
-  - name: Michael Burry
-    filer_keywords: ["SCION ASSET MANAGEMENT"]
   - name: David Tepper
     filer_keywords: ["APPALOOSA"]
   - name: Stanley Druckenmiller
@@ -73,6 +74,9 @@ public_figures:
   - Wilhelmsen Arne Alexander # Royal Caribbean director — ~$100M+ RCL sells in 15 trades filed 2026-11-06/13 (added 2026-11-16)
   - Stryker Ronda E   # Stryker Corp director/heir — ~$175M SYK sells in 5 trades filed 2026-11-09 (added 2026-11-16)
   - Bechtolsheim Andreas # Arista co-founder — ~$41M+ ANET sells in 5 trades filed 2026-11-09/10 (added 2026-11-16)
+  - Brown Gregory Q    # Motorola Solutions chairman/CEO — ~$70M MSI sells Nov 6-16, no 10b5-1 plan; 9 MSI insiders sold ~$111M in 3 days (added 2026-11-23)
+  - Icahn Carl C       # activist investor — ~$39M CTRI sells in 4 trades filed 2026-11-12/17 (added 2026-11-23)
+  - Sankar Shyam       # Palantir CTO — ~$41M PLTR sells in 3 trades filed 2026-11-13 (added 2026-11-23)
 
 firms:
   # Major investment firms tracked via 13F
@@ -94,8 +98,6 @@ firms:
     filer_keywords: ["BAUPOST GROUP"]
   - name: Soros Fund Management
     filer_keywords: ["SOROS FUND MANAGEMENT"]
-  - name: Scion Asset Management
-    filer_keywords: ["SCION ASSET MANAGEMENT"]
 
 # Form 4 "notable" threshold: flag insider buys/sells above this USD value
 # even when the insider isn't on a watchlist.
